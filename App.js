@@ -1,19 +1,26 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
+import DayCard from './components/DayCard'
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text style={styles.title}>MATTLENDAR</Text>
+      <DayCard/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  title: {
+    color: 'white',
+    paddingTop: 35,
+    fontSize: 30,
+    fontWeight: "800"
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'teal',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
 });
