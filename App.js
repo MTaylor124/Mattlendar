@@ -14,17 +14,30 @@ export default class App extends React.Component {
       debug: '',
       actualWeather: [],
       current: 0,
-      low: 0,
-      high: 0,
+      low: '',
+      high: '',
       cityName: '',
-      description: ''
+      description: '',
+      todaysrealdate: '',
+      weatherIcon: '',
+      isClicked: false
     }
   }
   kelvin2farenheit(temp) {
     const returnTemp = Math.floor(((temp - 273.15) * (9/5)) + 32)
     return returnTemp
   }
-  getForecast2(zip) {
+  getTodaysDate() {
+    const months = [ "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December" ]
+    const todaysdate = new Date()
+    const todayDAY = todaysdate.getDate()
+    const todayMonth = todaysdate.getMonth() + 1
+    const bestDate = ('' + months[todayMonth] + ' ' + todayDAY)
+    return bestDate
+  }
+  getForecast2() {
+    this.setState({ todaysrealdate: this.getTodaysDate() })
     fetch('https://api.openweathermap.org/data/2.5/weather?q=boston,us&appid=d2cf1542594e6c200fc6460bbe090913')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -34,31 +47,41 @@ export default class App extends React.Component {
         let desc = responseJson.weather[0].description
         let actualWeather2 = responseJson
         let boname = responseJson.name
-        this.setState({ today: weather, doweather: true, debug: '', actualWeather: actualWeather2, cityName: boname, low: weatherMin, high: weatherMax, description: desc})
+        let imageIcon = responseJson.weather[0].icon
+        let completeIconLink = ('https://openweathermap.org/img/w/' + imageIcon + '.png')
+        this.setState({ today: weather, doweather: true, debug: '', actualWeather: actualWeather2, cityName: boname, low: weatherMin, high: weatherMax, description: desc, weatherIcon: completeIconLink, isClicked: true})
     })
     .catch((error) => {
       alert(error.message)
     })
   }
   render() {
-
+    let buttonText
+    if (this.state.isClicked) {
+      buttonText = '3 day forecast coming soon!'
+    } else {
+      buttonText = 'Tap here for Boston weather!'
+    }
     return (
       <View style={styles.container}>
         <StatusBar hidden/>
         <Text style={styles.title}>MATTLENDAR FORECAST</Text>
         <Text style={styles.debug}>{this.state.debug}</Text>
-        <DayCard
-          boston={this.state.actualWeather}
-          current={this.state.today}
-          low={this.state.low}
-          high={this.state.high}
-          description={this.state.description}
-          />
+          <DayCard
+            boston={this.state.actualWeather}
+            current={this.state.today}
+            low={this.state.low}
+            high={this.state.high}
+            description={this.state.description}
+            theDate={this.state.todaysrealdate}
+            iconLink={this.state.weatherIcon}
+            />
+
         <TouchableOpacity
           onPress={() => {
-            this.getForecast2(this.state.zipcode)
+            this.getForecast2()
           }}>
-          <Text>click here for boston weather
+          <Text style={styles.weatherButton}>{buttonText}
           </Text>
         </TouchableOpacity>
       </View>
@@ -67,6 +90,17 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  weatherButton: {
+    fontSize: 23,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 30,
+    borderColor: 'black',
+    borderWidth: 3,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    // length: '80%'
+  },
   debug: {
     color: 'white',
     fontSize: 20
