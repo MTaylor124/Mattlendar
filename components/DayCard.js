@@ -2,17 +2,18 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import axios from 'axios'
 
-export default function DayCard () {
+export default function DayCard (props) {
   return (
     <View style={styles.card}>
-      <Text style={styles.location}>Mansfield, MA</Text>
-      <Text style={styles.weekday}>MONDAY</Text>
-      <Text style={styles.date}>1/1/19</Text>
+      <Text style={styles.location}>TODAY</Text>
+      <Text style={styles.weekday}>{props.boston.name}</Text>
+      <Text style={styles.date}></Text>
 
-        <View style={styles.weatherpic}><Text styles={styles.weatherPicText}>sunny</Text></View>
+        <View style={styles.weatherpic}><Text styles={styles.weatherPicText}>{props.description}</Text></View>
+        <View><Text>current temp: {props.current}</Text></View>
       <View style={styles.temps}>
-        <Text style={styles.temp}>High: 420</Text>
-        <Text style={styles.temp}>Low: 69</Text>
+        <Text style={styles.temp}>High: {props.high}</Text>
+        <Text style={styles.temp}>Low: {props.low}</Text>
       </View>
     </View>
   )
